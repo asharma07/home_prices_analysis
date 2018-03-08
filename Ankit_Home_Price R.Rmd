@@ -1,0 +1,278 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+Ankit Home Prices Analysis
+
+
+```{r}
+# Imporitng the dataset for box plot of each region from Home Price Dataset
+central<-read.csv('Centralzone.csv')
+```
+```{r}
+west<-read.csv('West.csv')
+```
+```{r}
+northeast<-read.csv('Northeastzone.csv')
+```
+```{r}
+southeast<-read.csv('Southeastzone.csv')
+```
+
+
+```{r}
+#Plotting the boxplot by each region boxplot
+boxplot(northeast,las=2,names=c("2004","2005","2006","2007","2008","2009","2010","2011","2012"),col="grey",xlab="YEAR",ylab="PRICE",main="Ankit Northeast Region BoxPlot")
+```
+
+```{r}
+boxplot(southeast,las=2,names=c("2004","2005","2006","2007","2008","2009","2010","2011","2012"),col="red",xlab="YEAR",ylab="PRICE",main="Ankit Southeast Region Boxplot")
+```
+
+```{r}
+boxplot(west,las=2,names=c("2004","2005","2006","2007","2008","2009","2010","2011","2012"),col="blue",xlab="YEAR",ylab="PRICE",main="Ankit West Region Boxplot")
+```
+
+```{r}
+boxplot(central,las=2,names=c("2004","2005","2006","2007","2008","2009","2010","2011","2012"),col="green",xlab="YEAR",ylab="PRICE",main="Ankit Central Region Boxplot")
+```
+
+
+
+```{r}
+# Importing the Dataset
+Home<-read.csv('Homeprice.csv')
+attach(Home)
+#Summarize the dataset by region and Descriptive Statistics
+summary(Home)
+```
+
+
+
+```{r}
+# ggplot2 and plyr for trend analysis for the price variation between the states
+require(ggplot2)
+require(plyr)
+```
+
+```{r}
+# Importing Dataset for Price Trend Analysis
+centralplot<-read.csv('T_centralplot.csv')
+head(centralplot)
+```
+```{r}
+#Removing Missing values(NA)
+a<-na.omit(centralplot)
+```
+```{r}
+# Plotting the graph
+central<-ddply(centralplot,c("State","Year"),summarise, length=mean(Central))
+ggplot(data=central,mapping=aes(x=Year,y=length,colour=State, main="Ankit Trend")) + geom_line()
+```
+
+```{r}
+# Importing the dataset
+northplot<-read.csv('T_northplot.csv')
+head(northplot)
+```
+
+```{r}
+# Removing missing values(NA)
+b<- na.omit(northplot)
+```
+
+```{r}
+# Plotting the graph 
+north<-ddply(northplot,c("State","Year"),summarise, length=mean(Northeast))
+ggplot(data=north,mapping=aes(x=Year,y=length,colour=State, main="Ankit Trend")) + geom_line()
+```
+
+```{r}
+# Importing the dataset
+southplot<-read.csv('T_southplot.csv')
+head(southplot)
+```
+
+```{r}
+# Removing missing values(NA)
+c<- na.omit(southplot)
+```
+
+```{r}
+# Plotting the graph
+south<-ddply(southplot,c("State","Year"),summarise, length=mean(Southeast))
+ggplot(data=south,mapping=aes(x=Year,y=length,colour=State, main="Ankit Trend")) + geom_line()
+```
+
+```{r}
+# Importing the dataset
+west.plot<-read.csv('T_westplot.csv')
+head(west.plot)
+```
+```{r}
+# Removing Missing values(NA)
+d<-na.omit(west.plot)
+```
+```{r}
+#Ploting the graph 
+west<-ddply(west.plot,c("State","Year"),summarise, length=mean(West))
+ggplot(data=west,mapping=aes(x=Year,y=length,colour=State, main="Ankit Trend")) + geom_line()
+```
+
+```{r}
+#HYPOTHESIS TESTING:
+#NULL H0- Assuming there is no difference between the two population mean of region
+#ALTERNATVE HA- There is a difference beween the means of region
+#Performing Two independent sample t-test on central and northeast region
+cn<-t.test(Central,Northeast)
+cn
+```
+
+```{r}
+#Performing two independent sample t-test on central and southeast region
+cs<-t.test(Central,Southeast)
+cs
+```
+
+```{r}
+#Performing two independent sample t-test on central and west region
+cw<-t.test(Central,West)
+cw
+```
+
+```{r}
+#Performing two independent sample t-test on west and southeast region
+Ws<-t.test(West,Southeast)
+Ws
+```
+
+```{r}
+#Performing two independent sample t-test on northeast and southeast region
+ns<-t.test(Northeast,Southeast)
+ns
+```
+
+```{r}
+# Performing two independent sample t-test on northeast and west region
+nw<-t.test(Northeast,West)
+nw
+```
+
+```{r}
+#Performing two independent sample t-test on southeast and west
+sw<-t.test(Southeast,West)
+sw
+```
+
+```{r}
+# Performing one way annova for the regions because the dataset contains missing values
+# Importing dataset
+aov.central<-read.csv('acentral.csv')
+head(aov.central)
+```
+
+```{r}
+# Performing one - way ANOVA on central region
+ANOVA.c<-aov(Central~Year ,aov.central)
+summary(ANOVA.c)
+```
+
+```{r}
+# Importing dataset
+aov.northeast<-read.csv('anortheast.csv')
+head(aov.northeast)
+```
+
+```{r}
+# Performing out one - way ANOVA on northeast region
+ANOVA.n<-aov(Northeast~Year ,aov.northeast)
+summary(ANOVA.n)
+```
+
+```{r}
+# Importing dataset
+aov.southeast<-read.csv('southeast.csv')
+head(aov.southeast)
+```
+
+```{r}
+# Performing out a one - way ANOVA on southeast region
+ANOVA.s<-aov(Southeast~Year ,aov.southeast)
+summary(ANOVA.s)
+```
+
+```{r}
+# Importing dataset
+aov.w<-read.csv('awest.csv')
+head(aov.w)
+```
+
+```{r}
+# Performing out a oneway ANOVA on west region
+ANOVA.west<-aov(West~Year ,aov.w)
+summary(ANOVA.west)
+```
+
+```{r}
+# Imporitng dataset of all regions
+aov.regions<-read.csv('aregions.csv')
+head(aov.regions)
+```
+
+```{r}
+# Performing annova for all regions
+ANOVA<-aov(Response~Treatment ,aov.regions)
+summary(ANOVA)
+```
+
+```{r}
+# install and require "agricolae" for Least Significant Difference(LSD) test 
+require(agricolae)
+# comparing the means of the regions or treatment in order to the one causing the significance of the treatment
+comp<-LSD.test(ANOVA,"Treatment")
+comp
+```
+
+```{r}
+# Explananing Results
+
+# Descriptive statistics results
+
+# Price variation trend was plotted for each region which helps to show how prices vary among states in each region from 2004 to 2012
+# We can also know the Price variation at the states with the highest and least average price.  
+
+# Box Plot Results
+
+# Central region box plot have the highest number of outliers 
+# North east have the least number of outliers. 
+
+# West region prices are higher with the average mean of 300.7
+# Northeast region prices are at second place with the average mean of 234.3
+# Southeast region prices are at third place with the average mean of 151.7
+# Central region has lowest price at last with the average mean of 128.8
+
+# Independent two sample t test results
+
+# Hypothesis testing was done for two independent populations of regions with the mean differences
+# Indepedent T test was performed between the two regions mean and it was found that there is no significant difference between the mean between all region compared. Therefore, we fail to reject the null hypothesis
+
+# ANOVA Results
+
+# one-way Anova was perfomed for all the regions and also between each regions
+# As there were missing values, we perfomed one-way Anova
+# In one-way annova we can have missing values
+# we performed annova to check the means of each years price in the region and also within all the regions
+# Southeast is significant at alpha 0.0001
+# Norheast is significant at alpha 0.01
+# West is significant at aplha 0.10
+# Therefore the years in west region have high significant difference 
+# ANOVA between the regions have very high significant difference at alpha =0.001 
+# As a result, we need to perform Least Square Difference LSD test to know the region which causes the difference
+# We found that west region caused the difference.
+
+```
+
+
+
